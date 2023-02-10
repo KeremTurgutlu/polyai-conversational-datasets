@@ -9,7 +9,8 @@ from os import path
 
 import tensorflow as tf
 
-from opensubtitles import create_data
+# from . import create_data
+import create_data
 
 _TRAIN_FILE = "\n".join([
     "matt: AAAA",  # words followed by colons are stripped.
@@ -45,10 +46,12 @@ class CreateDataPipelineTest(unittest.TestCase):
         # These filenames are chosen so that their hashes will cause them to
         # be put in the train and test set respectively.
         with open(path.join(self._temp_dir, "input_train.txt"), "w") as f:
-            f.write(_TRAIN_FILE.encode("utf-8"))
+            f.write(_TRAIN_FILE.encode("utf-8").decode())
+            # f.write(_TRAIN_FILE.encode("utf-8"))
 
         with open(path.join(self._temp_dir, "input_test.txt"), "w") as f:
-            f.write(_TEST_FILE.encode("utf-8"))
+            f.write(_TEST_FILE.encode("utf-8").decode())
+            # f.write(_TEST_FILE.encode("utf-8"))
 
         create_data.run(argv=[
             "--runner=DirectRunner",
@@ -62,17 +65,17 @@ class CreateDataPipelineTest(unittest.TestCase):
             "--train_split=0.5",
         ])
 
-        self.assertItemsEqual(
+        self.assertCountEqual(
             [path.join(self._temp_dir, expected_file) for expected_file in
              ["train-00000-of-00002.tfrecord",
               "train-00001-of-00002.tfrecord"]],
-            glob(path.join(self._temp_dir, "train-*"))
+            sorted(glob(path.join(self._temp_dir, "train-*")))
         )
-        self.assertItemsEqual(
+        self.assertCountEqual(
             [path.join(self._temp_dir, expected_file) for expected_file in
              ["test-00000-of-00002.tfrecord",
               "test-00001-of-00002.tfrecord"]],
-            glob(path.join(self._temp_dir, "test-*"))
+            sorted(glob(path.join(self._temp_dir, "test-*")))
         )
 
         train_examples = self._read_examples("train-*")
@@ -84,7 +87,7 @@ class CreateDataPipelineTest(unittest.TestCase):
             self.create_example(
                 ["AAAA", "BBBB", "CCCC"], "DDDD", "input_train.txt"),
         ]
-        self.assertItemsEqual(
+        self.assertCountEqual(
             expected_train_examples,
             train_examples
         )
@@ -98,7 +101,7 @@ class CreateDataPipelineTest(unittest.TestCase):
             self.create_example(
                 ["aaaa", "bbbb", "cccc"], "dddd", "input_test.txt"),
         ]
-        self.assertItemsEqual(
+        self.assertCountEqual(
             expected_test_examples,
             test_examples
         )
@@ -107,16 +110,15 @@ class CreateDataPipelineTest(unittest.TestCase):
         features = create_data.create_example(previous_lines, line, file_id)
         example = tf.train.Example()
         for feature_name, feature_value in features.items():
-            example.features.feature[feature_name].bytes_list.value.append(
-                feature_value.encode("utf-8"))
+            example.features.feature[feature_name].bytes_list.value.append(feature_value.encode("utf-8"))
         return example
 
     def _read_examples(self, pattern):
         examples = []
-        for file_name in glob(path.join(self._temp_dir, pattern)):
-            for record in tf.io.tf_record_iterator(file_name):
+        for file_name in sorted(glob(path.join(self._temp_dir, pattern))):
+            for record in tf.data.TFRecordDataset(file_name):
                 example = tf.train.Example()
-                example.ParseFromString(record)
+                example.ParseFromString(record.numpy())
                 examples.append(example)
         return examples
 
@@ -124,10 +126,10 @@ class CreateDataPipelineTest(unittest.TestCase):
         # These filenames are chosen so that their hashes will cause them to
         # be put in the train and test set respectively.
         with open(path.join(self._temp_dir, "input_train.txt"), "w") as f:
-            f.write(_TRAIN_FILE.encode("utf-8"))
+            f.write(_TRAIN_FILE.encode("utf-8").decode())
 
         with open(path.join(self._temp_dir, "input_test.txt"), "w") as f:
-            f.write(_TEST_FILE.encode("utf-8"))
+            f.write(_TEST_FILE.encode("utf-8").decode())
 
         create_data.run(argv=[
             "--runner=DirectRunner",
@@ -141,17 +143,17 @@ class CreateDataPipelineTest(unittest.TestCase):
             "--train_split=0.5",
         ])
 
-        self.assertItemsEqual(
+        self.assertCountEqual(
             [path.join(self._temp_dir, expected_file) for expected_file in
              ["train-00000-of-00002.json",
               "train-00001-of-00002.json"]],
-            glob(path.join(self._temp_dir, "train-*"))
+            sorted(glob(path.join(self._temp_dir, "train-*")))
         )
-        self.assertItemsEqual(
+        self.assertCountEqual(
             [path.join(self._temp_dir, expected_file) for expected_file in
              ["test-00000-of-00002.json",
               "test-00001-of-00002.json"]],
-            glob(path.join(self._temp_dir, "test-*"))
+            sorted(glob(path.join(self._temp_dir, "test-*")))
         )
 
         train_examples = self._read_json_examples("train-*")
@@ -163,7 +165,7 @@ class CreateDataPipelineTest(unittest.TestCase):
             create_data.create_example(
                 ["AAAA", "BBBB", "CCCC"], "DDDD", "input_train.txt"),
         ]
-        self.assertItemsEqual(
+        self.assertCountEqual(
             expected_train_examples,
             train_examples
         )
@@ -177,16 +179,17 @@ class CreateDataPipelineTest(unittest.TestCase):
             create_data.create_example(
                 ["aaaa", "bbbb", "cccc"], "dddd", "input_test.txt"),
         ]
-        self.assertItemsEqual(
+        self.assertCountEqual(
             expected_test_examples,
             test_examples
         )
 
     def _read_json_examples(self, pattern):
         examples = []
-        for file_name in glob(path.join(self._temp_dir, pattern)):
-            for line in open(file_name):
-                examples.append(json.loads(line))
+        for file_name in sorted(glob(path.join(self._temp_dir, pattern))):
+            with open(file_name) as f:
+                for line in f:
+                    examples.append(json.loads(line))
         return examples
 
 

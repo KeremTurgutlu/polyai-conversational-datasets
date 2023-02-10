@@ -1,6 +1,8 @@
+reddit/data/**
 data/**
 baselines/results.csv
 .DS_Store
+.ipynb_checkpoints
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

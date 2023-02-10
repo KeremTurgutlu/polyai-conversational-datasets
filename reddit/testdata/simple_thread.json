@@ -3,8 +3,8 @@
     "body": "AAAA",
     "author": "author-A",
     "subreddit_id": "t5_subreddit-A",
-    "link_id": "t3_thread-A",
-    "parent_id": "top-level",
+    "link_id": "t3_testthread",
+    "parent_id": "t3_testthread",
     "id": "id-A",
     "subreddit": "subreddit-A"
   },
@@ -12,7 +12,7 @@
     "body": "BBBB",
     "author": "author-B",
     "subreddit_id": "t5_subreddit-A",
-    "link_id": "t3_thread-A",
+    "link_id": "t3_testthread",
     "parent_id": "t2_id-A",
     "id": "id-B",
     "subreddit": "subreddit-A"
@@ -21,7 +21,7 @@
     "body": "CCCC",
     "author": "author-C",
     "subreddit_id": "t5_subreddit-A",
-    "link_id": "t3_thread-A",
+    "link_id": "t3_testthread",
     "parent_id": "t2_id-B",
     "id": "id-C",
     "subreddit": "subreddit-A"
@@ -30,7 +30,7 @@
     "body": "DDDD",
     "author": "author-D",
     "subreddit_id": "t5_subreddit-A",
-    "link_id": "t3_thread-A",
+    "link_id": "t3_testthread",
     "parent_id": "t2_id-B",
     "id": "id-D",
     "subreddit": "subreddit-A"
@@ -39,7 +39,7 @@
     "body": "EEEE",
     "author": "author-E",
     "subreddit_id": "t5_subreddit-A",
-    "link_id": "t3_thread-A",
+    "link_id": "t3_testthread",
     "parent_id": "t2_id-D",
     "id": "id-E",
     "subreddit": "subreddit-A"
@@ -48,7 +48,7 @@
     "body": "too long to create an example",
     "author": "author-too-long",
     "subreddit_id": "t5_subreddit-A",
-    "link_id": "t3_thread-A",
+    "link_id": "t3_testthread",
     "parent_id": "t2_id-D",
     "id": "id-too-long",
     "subreddit": "subreddit-A"
@@ -57,7 +57,7 @@
     "body": "123",
     "author": "author-too-short",
     "subreddit_id": "t5_subreddit-A",
-    "link_id": "t3_thread-A",
+    "link_id": "t3_testthread",
     "parent_id": "t2_id-D",
     "id": "id-too-short",
     "subreddit": "subreddit-A"
@@ -66,8 +66,8 @@
     "body": "FFFF",
     "author": "author-too-short",
     "subreddit_id": "t5_subreddit-A",
-    "link_id": "t3_thread-A",
-    "parent_id": "top-level",
+    "link_id": "t3_testthread",
+    "parent_id": "t3_testthread",
     "id": "id-no-replies",
     "subreddit": "subreddit-A"
   }

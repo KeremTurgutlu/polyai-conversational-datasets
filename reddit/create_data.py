@@ -153,7 +153,7 @@ def _should_skip(comment, min_length):
     return False
 
 
-def create_examples(thread, parent_depth, min_length, format):
+def create_examples(thread, parent_depth, min_length):
     """Creates serialized tensorflow examples from a reddit thread."""
     id_to_comment = {comment.id: comment for comment in list(thread)}
 

@@ -93,6 +93,92 @@ python reddit/create_data.py \
   --dataset_format TF
 ```
 
+```bash
+PROJECT="gothic-list-295300"
+BUCKET="keremturgutlu-datasets"
+DATADIR="gs://${BUCKET?}/reddit/bigquery/$(date +"%d-%m-%y")"
+
+# Our modified pipeline version. Dataflow runner GCS.
+
+python reddit/create_data_v2.py \
+  --output_dir ${DATADIR?} \
+  --reddit_table ${PROJECT?}:data.reddit_sample \
+  --runner DataflowRunner \
+  --temp_location ${DATADIR?}/temp \
+  --staging_location ${DATADIR?}/staging \
+  --project ${PROJECT?} \
+  --dataset_format TF \
+  --detect_lang true \
+  --requirements_file pipeline_requirements.txt \
+  --save_main_session
+```
+
+```bash
+PROJECT="gothic-list-295300"
+BUCKET="keremturgutlu-datasets"
+DATADIR="/tmp"
+
+# Our modified pipeline version. DirectRunner for local testing.
+
+python reddit/create_data_v2.py \
+  --output_dir ${DATADIR?} \
+  --reddit_table ${PROJECT?}:data.reddit_sample \
+  --runner DirectRunner \
+  --temp_location ${DATADIR?}/temp \
+  --staging_location ${DATADIR?}/staging \
+  --project ${PROJECT?} \
+  --dataset_format TF \
+  --detect_lang true \
+  --requirements_file pipeline_requirements.txt \
+  --save_main_session
+```
+
+```bash
+PROJECT="gothic-list-295300"
+BUCKET="keremturgutlu-datasets"
+DATADIR="/tmp"
+IMAGE_URI="gcr.io/gothic-list-295300/apache_beam_tfds_python3.9:latest"
+
+# Our modified pipeline version. PortableRunner for local testing with a docker image.
+
+python reddit/create_data_v2.py \
+  --output_dir ${DATADIR?} \
+  --reddit_table ${PROJECT?}:data.reddit_sample \
+  --runner PortableRunner \
+  --job_endpoint="localhost:3000" \
+  --environment_type=DOCKER \
+  --environment_config=${IMAGE_URI} \
+  --temp_location ${DATADIR?}/temp \
+  --staging_location ${DATADIR?}/staging \
+  --project ${PROJECT?} \
+  --dataset_format TF \
+  --detect_lang true \
+  --requirements_file pipeline_requirements.txt \
+  --save_main_session
+```
+
+```bash
+PROJECT="gothic-list-295300"
+BUCKET="keremturgutlu-datasets"
+DATADIR="gs://${BUCKET?}/reddit/bigquery/$(date +"%d-%m-%y")"
+IMAGE_URI="gcr.io/gothic-list-295300/apache_beam_tfds_python3.9:latest"
+
+# Our modified pipeline version. Dataflow with a prebuild docker image.
+
+python reddit/create_data_v2.py \
+  --runner DataflowRunner \
+  --project ${PROJECT?} \
+  --output_dir ${DATADIR?} \
+  --temp_location ${DATADIR?}/temp \
+  --staging_location ${DATADIR?}/staging \
+  --sdk_container_image=${IMAGE_URI} \
+  --experiments=use_runner_v2 \
+  --save_main_session \
+  --reddit_table ${PROJECT?}:data.reddit_sample \
+  --dataset_format TF \
+  --detect_lang true
+```
+
 You may use `--dataset_format JSON` to output JSON examples, rather than serialized Tensorflow examples in TFRecords.
 
 Once the above is running, you can continue to monitor it in the terminal, or quit the process and follow the running job on the
